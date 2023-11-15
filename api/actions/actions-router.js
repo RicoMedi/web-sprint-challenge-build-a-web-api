@@ -17,11 +17,30 @@ router.get('/:id', validateActionId, (req, res)=>{
     res.json(req.actId);
 })
 
-router.post('/', validateActionsBody, validateProjectParent, (req,res,next)=>{
-    Actions.insert(req.body)
+router.post('/', validateActionsBody, validateProjectParent,(req,res,next)=>{
+    Actions.insert( req.body)
     .then((newActions)=>{
         res.status(201).json(newActions)
     }).catch(next)
+})
+
+router.put('/:id', validateActionId, validateActionsBody, (req, res, next) => {
+  Actions.update(req.params.id, req.body)
+      .then((changes) => {
+          res.status(200).json(changes);
+      })
+      .catch((err) => {  
+          next(err);
+      });
+});
+
+router.delete('/:id',validateActionId, (req, res, next)=>{
+  Actions.remove(req.params.id)
+  .then((removed)=>{
+    res.status(200).json(removed)
+  }).catch((err) =>{
+    next(err);
+  })
 })
 
 router.use((err, req, res, next) => {// eslint-disable-line
